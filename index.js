@@ -8,7 +8,7 @@ const app = express();
 // Handling GET request
 app.get('/', (req, res) => { 
     res.send('A simple Node App is '
-        + 'running on this server') 
+        + 'running on this server', 'hola profes somos el grupo 3 de computacion distribuida y le presentamos el bakend 🕺') 
     res.end() 
 }) 
  
