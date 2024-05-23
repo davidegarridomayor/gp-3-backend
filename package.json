@@ -4,19 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/davidegarridomayor/gp-3-backend.git"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/davidegarridomayor/gp-3-backend/issues"
-  },
-  "homepage": "https://github.com/davidegarridomayor/gp-3-backend#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
