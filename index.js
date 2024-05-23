@@ -1,9 +1,18 @@
 
 // Requiring module
 const express = require('express');
- 
+const cors = require("cors");
+const routes = require("./routes/index")
+const { config } = require('./config/EnvConfig');
+const whitelist = config.whiteList;
 // Creating express object
 const app = express();
+
+
+
+
+app.use(express.json())
+
  
 // Handling GET request
 app.get('/', (req, res) => { 
