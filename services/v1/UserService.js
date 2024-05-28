@@ -18,7 +18,7 @@ class UserService {
             where = {
                 [Op.or]: [
                     {
-                        name: {
+                        username: {
                             [Op.iLike]: `%${queryLowered}%`
                         },
                     },
@@ -26,7 +26,7 @@ class UserService {
             }
         }
         return await models.User.findAndCountAll({
-            attributes: ['id', 'name'],
+            attributes: ['id', 'username'],
             where,
             order: [
                 [sortBy, sortDesc === 'true' ? 'DESC' : 'ASC']
