@@ -48,7 +48,7 @@ router.post("/login", async (req, res, next) => {
     res.status(200).json(await userService.login(user));
   } catch (error) {
     console.log('error', error);
-    next(error);
+    res.status(500).send('Internal Server Error', error);
   }
 });
 
