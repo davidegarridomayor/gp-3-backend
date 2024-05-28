@@ -91,9 +91,13 @@ class UserService {
                     }
                     
                 )
+                const tokenExpiration = new Date(Date.now() + 5 * 60 * 1000);
+                await models.User.update(
+                    { token, tokenExpiration },
+                    { where: { id: user.id } }
+                );
                 user.token = token
-                user.tokenExpiration = new Date(Date.now() + 5 * 60 * 1000)
-                await user.save()
+                user.tokenExpiration = tokenExpiration
                 return this.generateResponse(user)
             }
         } catch (err) {
