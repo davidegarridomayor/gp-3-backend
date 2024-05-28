@@ -47,6 +47,7 @@ router.post("/login", async (req, res, next) => {
     const { body: user } = req;
     res.status(200).json(await userService.login(user));
   } catch (error) {
+    console.log('error', error);
     next(error);
   }
 });
