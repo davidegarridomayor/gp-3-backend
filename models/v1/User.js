@@ -25,9 +25,10 @@ const UserSchema = {
     allowNull: true,
     type: Sequelize.TEXT,
   },
-  token_expiration: {
+  tokenExpiration: {
     allowNull: true,
     type: Sequelize.DATE,
+    field: 'token_expiration'
   },
   createdAt: {
     allowNull: true,
