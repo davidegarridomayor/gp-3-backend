@@ -14,5 +14,5 @@ const config = {
   dbSsl: process.env.NODE_ENV === 'production',
   jwt_key:process.env.SECRET_KEY,
 }
-console.log('config', {config});
+
 module.exports = { config };
