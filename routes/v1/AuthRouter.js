@@ -52,11 +52,9 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-
-
 /**
  * @swagger
- * /auth/:
+ * /auth/register:
  *   post:
  *     summary: Register/Create a user
  *     tags: 
@@ -96,6 +94,47 @@ router.post("/register", async (req, res, next) => {
       res.status(201).json(await userService.add(user));
   } catch (error) {
       next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout a user
+ *     tags: 
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: int
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Logout successful"
+ */
+
+router.post("/logout", async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    await userService.logout(id);
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.log('error', error);
+    res.status(500).send({ error: 'Internal Server Error', message: error.message });
   }
 });
 

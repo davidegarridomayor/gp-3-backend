@@ -106,6 +106,19 @@ class UserService {
         }
     }
 
+    async logout(id) {
+        try {
+            await models.User.update(
+                { token: null},
+                { where: { id: id } }
+            );
+            return { message: "Logout successful" };
+        } catch (err) {
+            console.log(err);
+            throw new Error("Logout failed");
+        }
+    }
+
     generateResponse(user) {
         return {
             id: user.id,
