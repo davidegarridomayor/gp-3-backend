@@ -22,8 +22,7 @@ const options = {
 
 app.use(cors(options));
 app.get('/', (req, res) => { 
-    res.send('A simple Node App is '
-        + 'running on this server' + 'hola profes somos el grupo 3 de computacion distribuida y le presentamos el bakend 🕺') 
+    res.send('hola profes somos el grupo 3 de computacion distribuida y le presentamos el bakend 🕺' + 'api docs en https://api-gp-3.azurewebsites.net/api/v1/docs/') 
     res.end() 
 }) 
 
