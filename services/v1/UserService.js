@@ -123,10 +123,35 @@ class UserService {
         return {
             id: user.id,
             username: user.username,
+            role_id: user.role_id,
             token: user.token,
             tokenExpiration: user.tokenExpiration
         };
     }
+    async checkTokenUser(token){
+        try{
+          const decode = jwt.decode(token, {complete: true});
+          const user = await models.User.findOne({
+            where: {
+              email: decode.payload.email,
+            }
+          });
+          if (user.token === token && user.authTokenExpiration > new Date()){
+            return {
+              valid: true,
+              currentUser: user
+            };
+          } else {
+            user.token = null;
+            user.authTokenExpiration = null;
+            await user.save();
+          }
+          return { valid: false, currentUser: user };
+        } catch (err) {
+          return { valid: false, currentUser: null }
+        }
+      }
+    
 
 }
 
