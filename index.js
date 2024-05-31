@@ -22,7 +22,7 @@ const options = {
 
 app.use(cors(options));
 app.get('/', (req, res) => { 
-    res.send('hola profes somos el grupo 3 de computacion distribuida y le presentamos el bakend 🕺' + 'api docs en https://api-gp-3.azurewebsites.net/api/v1/docs/') 
+    res.send('hola profes somos el grupo 3 de computacion distribuida y le presentamos el bakend 🕺' + 'api docs en https://api-grupo-3.azurewebsites.net/api/v1/docs/') 
     res.end() 
 }) 
 
