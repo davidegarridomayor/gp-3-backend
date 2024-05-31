@@ -67,10 +67,10 @@ class UserService {
             const user = await models.User.findOne({
                 where: { username: data.username },
                 include: [{
-                  model: models.Role,
-                  as: 'role' // Make sure this alias matches the one defined in your association
+                    model: models.Role,
+                    as: 'role' // Make sure this alias matches the one defined in your association
                 }]
-              });
+            });
             console.log('user:', user);
 
             if (!user) {
@@ -93,15 +93,16 @@ class UserService {
                     },
                     config.jwt_key,
                     {
-                        expiresIn: '5m'
+                        expiresIn: '10s'
                     }
                     
                 )
-                const tokenExpiration = new Date(Date.now() + 5 * 60 * 1000);
+                const tokenExpiration = new Date(Date.now() + 10 * 1000);
                 await models.User.update(
                     { token, tokenExpiration },
                     { where: { id: user.id } }
                 );
+                
                 user.token = token
                 user.tokenExpiration = tokenExpiration
                 return this.generateResponse(user)
@@ -115,7 +116,7 @@ class UserService {
     async logout(id) {
         try {
             await models.User.update(
-                { token: null},
+                { token: null },
                 { where: { id: id } }
             );
             return { message: "Logout successful" };
@@ -136,30 +137,70 @@ class UserService {
             role: user.role.name
         };
     }
-    async checkTokenUser(token){
-        try{
-          const decode = jwt.decode(token, {complete: true});
-          const user = await models.User.findOne({
-            where: {
-              email: decode.payload.email,
+    async checkTokenUser(token) {
+        try {
+            const decode = jwt.decode(token, { complete: true });
+            const user = await models.User.findOne({
+                where: {
+                    email: decode.payload.email,
+                }
+            });
+            if (user.token === token && user.authTokenExpiration > new Date()) {
+                return {
+                    valid: true,
+                    currentUser: user
+                };
+            } else {
+                user.token = null;
+                user.authTokenExpiration = null;
+                await user.save();
             }
-          });
-          if (user.token === token && user.authTokenExpiration > new Date()){
-            return {
-              valid: true,
-              currentUser: user
-            };
-          } else {
-            user.token = null;
-            user.authTokenExpiration = null;
-            await user.save();
-          }
-          return { valid: false, currentUser: user };
+            return { valid: false, currentUser: user };
         } catch (err) {
-          return { valid: false, currentUser: null }
+            return { valid: false, currentUser: null }
         }
+    }
+    async checkAuth(id) {
+        try {
+            const user = await models.User.findOne({
+                where: {
+                    id: id,
+                }
+            })
+            const userTokenExpiration = new Date(this.formatDate(user.tokenExpiration))
+            console.log('token expiration', userTokenExpiration);
+            console.log('new date now', new Date());
+            if (user.token != null && userTokenExpiration > new Date()) {
+                return {
+                    isAuthenticated: true,
+                };
+            } else {
+                user.token = null;
+                user.tokenExpiration = null;
+                await user.update(
+                    { token: null, tokenExpiration: null },
+                    { where: { id: id }}
+                );
+                return {
+                    isAuthenticated: false,
+                };
+            }
+
+        } catch (error) {
+
+        }
+
+    }
+    formatDate(date) {
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+        const seconds = ('0' + date.getSeconds()).slice(-2);
+        const milliseconds = ('00' + date.getMilliseconds()).slice(-3);
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
       }
-    
 
 }
 
