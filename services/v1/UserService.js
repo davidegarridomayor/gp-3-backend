@@ -162,34 +162,27 @@ class UserService {
     }
     async checkAuth(id) {
         try {
-            const user = await models.User.findOne({
-                where: {
-                    id: id,
-                }
-            })
-            const userTokenExpiration = new Date(this.formatDate(user.tokenExpiration))
-            console.log('token expiration', userTokenExpiration);
-            console.log('new date now', new Date());
-            if (user.token != null && userTokenExpiration > new Date()) {
-                return {
-                    isAuthenticated: true,
-                };
-            } else {
-                user.token = null;
-                user.tokenExpiration = null;
-                await user.update(
-                    { token: null, tokenExpiration: null },
-                    { where: { id: id }}
-                );
-                return {
-                    isAuthenticated: false,
-                };
+            const user = await models.User.findOne({ where: { id: id } });
+            
+            if (!user) {
+                throw new Error('User not found');
             }
-
+    
+            if (user.token && new Date(this.formatDate(user.tokenExpiration)) > new Date()) {
+                return { isAuthenticated: true };
+            } 
+    
+            await user.update(
+                { token: null, tokenExpiration: null },
+                { where: { id: id } }
+            );
+            
+            return { isAuthenticated: false };
+    
         } catch (error) {
-
+            console.error('Error checking authentication:', error);
+            return { isAuthenticated: false };
         }
-
     }
     formatDate(date) {
         const year = date.getFullYear();
