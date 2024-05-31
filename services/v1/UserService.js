@@ -64,7 +64,13 @@ class UserService {
     async login(data) {
         console.log('data,', data);
         try {
-            const user = await models.User.findOne({ where: { username: data.username } });
+            const user = await models.User.findOne({
+                where: { username: data.username },
+                include: [{
+                  model: models.Role,
+                  as: 'role' // Make sure this alias matches the one defined in your association
+                }]
+              });
             console.log('user:', user);
 
             if (!user) {
@@ -125,7 +131,9 @@ class UserService {
             username: user.username,
             role_id: user.role_id,
             token: user.token,
-            tokenExpiration: user.tokenExpiration
+            tokenExpiration: user.tokenExpiration,
+            role_id: user.role.id,
+            role: user.role.name
         };
     }
     async checkTokenUser(token){
