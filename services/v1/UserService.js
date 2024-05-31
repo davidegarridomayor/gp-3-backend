@@ -58,11 +58,28 @@ class UserService {
         }
     }
 
+    async update(id, data) {
+        const dataTmp = await this.getById(id);
+        await dataTmp.update(data.user);
+        return await models.User.findOne({
+          where: {
+            id: id
+          },
+          include: [{
+            model: models.Role,
+            as: 'role' // Make sure this alias matches the one defined in your association
+        }],
+        });
+      }
+      async remove(id) {
+        const dataTmp = await this.getById(id);
+        return await dataTmp.destroy();
+      }
+
     /* ******************************************
     * auth
     ********************************************/
     async login(data) {
-        console.log('data,', data);
         try {
             const user = await models.User.findOne({
                 where: { username: data.username },
@@ -71,7 +88,6 @@ class UserService {
                     as: 'role' // Make sure this alias matches the one defined in your association
                 }]
             });
-            console.log('user:', user);
 
             if (!user) {
                 throw new Error("User not found");
@@ -193,6 +209,14 @@ class UserService {
         const seconds = ('0' + date.getSeconds()).slice(-2);
         const milliseconds = ('00' + date.getMilliseconds()).slice(-3);
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+      }
+
+      async getById(id) {
+        const dataTmp = await models.User.findByPk(id);
+        if(!dataTmp) {
+          throw boom.notFound("Not found");
+        }
+        return dataTmp;
       }
 
 }
