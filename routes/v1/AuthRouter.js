@@ -18,7 +18,7 @@ const userService = new UserService();
  *             properties:
  *               username:
  *                 type: string
- *                 example: "username"
+ *                 example: "user@mail.com"
  *               password:
  *                 type: string
  *                 example: "password123"
@@ -68,7 +68,7 @@ router.post("/login", async (req, res, next) => {
  *             properties:
  *               username:
  *                 type: string
- *                 example: "username"
+ *                 example: "user@mail.com"
  *               password:
  *                 type: string
  *                 example: "password123"
@@ -138,7 +138,35 @@ router.post("/logout", async (req, res, next) => {
   }
 });
 
-
+/**
+ * @swagger
+ * /auth/check-auth:
+ *   post:
+ *     summary: Check user authentication
+ *     tags: 
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: int
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Authentication status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isAuthenticated:
+ *                   type: boolean
+ *                   example: true
+ */
 router.post("/check-auth", async (req, res, next) => {
   console.log('hello', req.body);
   try {
