@@ -45,6 +45,12 @@ const UserSchema = {
 class User extends Model {
   // eslint-disable-next-line no-unused-vars
   static associate(models) {
+    this.belongsTo(models.Role, { as: 'role', foreignKey: 'role_id' });
+    this.hasMany(models.Ticket, {as:'ticket', foreignKey: 'user_id' });
+    this.hasMany(models.Comment, {as: 'comment', foreignKey: 'user_id' });
+    this.hasMany(models.Assignment, { as: 'admin', foreignKey: 'admin_id' });
+    this.hasMany(models.Assignment, { as: 'tech', foreignKey: 'tech_id' });
+    this.hasMany(models.Assignment, { as: 'client', foreignKey: 'client_id' });
   }
 
   static config(sequelize) {
