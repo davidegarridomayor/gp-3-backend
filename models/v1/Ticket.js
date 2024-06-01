@@ -35,15 +35,19 @@ const TicketSchema = {
     allowNull: false,
     type: Sequelize.INTEGER,
   },
+  description: {
+    allowNull: true,
+    type: Sequelize.STRING,
+  }
 };
 
 class Ticket extends Model {
   static associate(models) {
-    this.belongsTo(models.Status, {as: 'status', foreignKey: 'status_id' });
-    this.belongsTo(models.Type, {as: 'type', foreignKey: 'type_id' });
-    this.belongsTo(models.User, {as: 'user', foreignKey: 'user_id' });
-    this.hasMany(models.Comment, {as: 'comment', foreignKey: 'ticket_id' });
-    this.hasMany(models.Assignment, {as: 'assignment', foreignKey: 'ticket_id' });
+    this.belongsTo(models.Status, { as: 'status', foreignKey: 'status_id' });
+    this.belongsTo(models.Type, { as: 'type', foreignKey: 'type_id' });
+    this.belongsTo(models.User, { as: 'user', foreignKey: 'user_id' });
+    this.hasMany(models.Comment, { as: 'comment', foreignKey: 'ticket_id' });
+    this.hasMany(models.Assignment, { as: 'assignment', foreignKey: 'ticket_id' });
   }
 
   static config(sequelize) {
