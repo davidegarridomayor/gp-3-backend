@@ -34,11 +34,25 @@ class TicketService {
 
     }
     async getById(id) {
-        const dataTmp = await models.Ticket.findByPk(id);
-        if (!dataTmp) {
+        const ticket = await models.Ticket.findByPk(id, {
+            include: [{
+                model: models.Comment,
+                attributes: ['id', 'content', 'user_id'],
+                as: 'comment',
+                // You can include additional options here as needed
+                include: [{
+                    model: models.User,
+                    attributes: ['id', 'username', "name"], // Include the user attributes you need
+                    as: 'user'
+                }]
+            }]
+        });
+    
+        if (!ticket) {
             throw new Error(`Ticket with id ${id} not found`);
         }
-        return dataTmp;
+    
+        return ticket;
     }
     async add(data) {
         const createdTicket = await models.Ticket.create(data.ticket);
@@ -63,6 +77,30 @@ class TicketService {
     async remove(id) {
         const dataTmp = await this.getById(id);
         return await dataTmp.destroy();
+    }
+    async getByUserId(id){
+        const tickets = await models.Ticket.findAll({
+            where: {
+                user_id: id
+            },
+            include: [{
+                model: models.Comment,
+                attributes: ['id', 'content', 'user_id'],
+                as: 'comments',
+                include: [{
+                    model: models.User,
+                    attributes: ['id', 'username', "name"],
+                    as: 'user'
+                }]
+            }]
+        });
+
+        if (!tickets.length) {
+            throw new Error(`No tickets found for user with id ${id}`);
+        }
+
+        return tickets;
+
     }
 }
 
