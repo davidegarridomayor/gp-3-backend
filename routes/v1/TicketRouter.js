@@ -148,6 +148,16 @@ router.get("/:id",
     }
 });
 
+router.get("/by-user/:id",
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      res.json(await ticketService.getByUserId(id));
+    } catch (error) {
+      next(error);
+    }
+});
+
 /**
  * @swagger
  * /ticket/{id}:
