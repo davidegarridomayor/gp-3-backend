@@ -15,7 +15,7 @@ const AssignmentSchema = {
     type: Sequelize.INTEGER,
   },
   admin_id: {
-    allowNull: false,
+    allowNull: true,
     type: Sequelize.INTEGER,
   },
   tech_id: {

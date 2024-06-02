@@ -46,7 +46,7 @@ class Ticket extends Model {
     this.belongsTo(models.Status, { as: 'status', foreignKey: 'status_id' });
     this.belongsTo(models.Type, { as: 'type', foreignKey: 'type_id' });
     this.belongsTo(models.User, { as: 'user', foreignKey: 'user_id' });
-    this.hasMany(models.Comment, { as: 'comment', foreignKey: 'ticket_id' });
+    this.hasMany(models.Comment, { as: 'comments', foreignKey: 'ticket_id' });
     this.hasMany(models.Assignment, { as: 'assignment', foreignKey: 'ticket_id' });
   }
 

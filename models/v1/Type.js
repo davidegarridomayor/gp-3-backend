@@ -26,6 +26,10 @@ const TypeSchema = {
     allowNull: true,
     type: Sequelize.INTEGER,
   },
+  priority:{
+    allowNull: true,
+    type: Sequelize.INTEGER,
+  }
 };
 
 class Type extends Model {
