@@ -38,7 +38,12 @@ const TicketSchema = {
   description: {
     allowNull: true,
     type: Sequelize.STRING,
+  },
+  priority:{
+    allowNull: false,
+    type: Sequelize.INTEGER,
   }
+  
 };
 
 class Ticket extends Model {

@@ -47,21 +47,41 @@ class TicketService {
                 }]
             }]
         });
-    
+
         if (!ticket) {
             throw new Error(`Ticket with id ${id} not found`);
         }
-    
+
         return ticket;
     }
     async add(data) {
+    try {
+        const [user, type] = await Promise.all([
+            models.User.findOne({
+                where: { id: data.ticket.user_id },
+                attributes: ['priority']
+            }),
+            models.Type.findOne({
+                where: { id: data.ticket.type_id },
+                attributes: ['priority']
+            })
+        ]);
+
+        if (!user || !type) {
+            throw new Error('User or Type not found');
+        }
+
+        data.ticket.priority = Math.min(user.priority, type.priority);
+
         const createdTicket = await models.Ticket.create(data.ticket);
         return await models.Ticket.findOne({
-            where: {
-                id: createdTicket.id
-            }
-        })
+            where: { id: createdTicket.id }
+        });
+    } catch (error) {
+        console.error('Error adding ticket:', error);
+        throw error;
     }
+}
 
 
     async update(id, data) {
@@ -78,7 +98,7 @@ class TicketService {
         const dataTmp = await this.getById(id);
         return await dataTmp.destroy();
     }
-    async getByUserId(id){
+    async getByUserId(id) {
         const tickets = await models.Ticket.findAll({
             where: {
                 user_id: id

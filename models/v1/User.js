@@ -13,6 +13,10 @@ const UserSchema = {
     allowNull: false,
     type: Sequelize.STRING,
   },
+  name:{
+    allowNull: true,
+    type: Sequelize.STRING,
+  },
   password: {
     allowNull: false,
     type: Sequelize.STRING,
@@ -40,6 +44,10 @@ const UserSchema = {
     type: 'TIMESTAMP WITHOUT TIME ZONE',
     field: 'updated_at',
   },
+  priority: {
+    allowNull: true,
+    type: Sequelize.INTEGER,
+  }
 }
 
 class User extends Model {
