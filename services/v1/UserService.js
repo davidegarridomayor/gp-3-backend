@@ -30,7 +30,9 @@ class UserService {
             where,
             include: [{
                 model: models.Role,
-                as: 'role'
+                as: 'role',
+                attributes: ['name']
+
             }],
             order: [
                 [sortBy, sortDesc === 'true' ? 'DESC' : 'ASC']
