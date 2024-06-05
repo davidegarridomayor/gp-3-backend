@@ -114,9 +114,8 @@ class TicketService {
                 }]
             }]
         });
-
         if (!tickets.length) {
-            throw new Error(`No tickets found for user with id ${id}`);
+            return []
         }
 
         return tickets;
