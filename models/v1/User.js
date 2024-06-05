@@ -22,7 +22,7 @@ const UserSchema = {
     type: Sequelize.STRING,
   },
   role_id:{
-    allowNull: true,
+    allowNull: false,
     type: Sequelize.INTEGER,
   },
   token: {

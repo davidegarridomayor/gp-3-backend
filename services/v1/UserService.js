@@ -60,17 +60,23 @@ class UserService {
 
     async update(id, data) {
         const dataTmp = await this.getById(id);
+
+        if (data.user.password) {
+            const saltRounds = 10; 
+            data.user.password = await bcrypt.hash(data.user.password, saltRounds);
+        }
+    
         await dataTmp.update(data.user);
         return await models.User.findOne({
-          where: {
-            id: id
-          },
-          include: [{
-            model: models.Role,
-            as: 'role' // Make sure this alias matches the one defined in your association
-        }],
+            where: {
+                id: id
+            },
+            include: [{
+                model: models.Role,
+                as: 'role' // Make sure this alias matches the one defined in your association
+            }],
         });
-      }
+    }
       async remove(id) {
         const dataTmp = await this.getById(id);
         return await dataTmp.destroy();
