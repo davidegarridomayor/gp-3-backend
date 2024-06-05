@@ -91,7 +91,7 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   try {
       const { body: user } = req;
-      res.status(201).json(await userService.add(user));
+      res.status(201).json(await userService.add(user.user));
   } catch (error) {
       next(error);
   }

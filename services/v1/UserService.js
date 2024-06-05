@@ -52,11 +52,14 @@ class UserService {
             data.password = await bcrypt.hash(data.password, 10);
             console.log('Creating user with username:', data.username);
             const createdUser = await models.User.create(data);
-            console.log('Created user with ID:', createdUser.id);
+            console.log('Created user with ID:', createdUser);
 
             return {
                 id: createdUser.id,
-                username: createdUser.username
+                username: createdUser.username,
+                name: createdUser.name,
+                roleId: createdUser.role_id,
+                priority: createdUser.priority
             };
         } catch (error) {
             console.error('Error creating user:', error);
