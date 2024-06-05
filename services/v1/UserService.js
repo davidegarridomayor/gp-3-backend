@@ -152,6 +152,7 @@ class UserService {
         return {
             id: user.id,
             username: user.username,
+            name: user.name,
             role_id: user.role_id,
             token: user.token,
             tokenExpiration: user.tokenExpiration,
