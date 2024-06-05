@@ -26,8 +26,12 @@ class UserService {
             }
         }
         return await models.User.findAndCountAll({
-            attributes: ['id', 'username'],
+            attributes: ['id', 'username', 'name','priority', 'role_id'],
             where,
+            include: [{
+                model: models.Role,
+                as: 'role'
+            }],
             order: [
                 [sortBy, sortDesc === 'true' ? 'DESC' : 'ASC']
             ],
@@ -86,6 +90,7 @@ class UserService {
     * auth
     ********************************************/
     async login(data) {
+        console.log('data', data);
         try {
             const user = await models.User.findOne({
                 where: { username: data.username },
@@ -100,6 +105,7 @@ class UserService {
             }
 
             const isPasswordValid = await bcrypt.compare(data.password, user.password);
+            console.log('COMPARING THE PASS', isPasswordValid);
             if (!isPasswordValid) {
                 throw new Error("Invalid password");
             }
@@ -115,11 +121,12 @@ class UserService {
                     },
                     config.jwt_key,
                     {
-                        expiresIn: '10s'
+                        expiresIn: '5m'
                     }
                     
                 )
-                const tokenExpiration = new Date(Date.now() + 10 * 1000);
+                const tokenExpiration = new Date(Date.now() + 5 * 60 * 1000);
+                console.log('miau', user.id);
                 await models.User.update(
                     { token, tokenExpiration },
                     { where: { id: user.id } }
