@@ -23,14 +23,41 @@ class TicketService {
                 ]
             }
         }
-
-        return await models.Ticket.findAndCountAll({
+        const allTickets = await models.Ticket.findAndCountAll({
             order: [
                 [sortBy, sortDesc === 'true' ? 'DESC' : 'ASC']
+            ],
+            include:[
+                {
+                    model:models.Assignment,
+                    as: 'assignment',
+                    include:[{
+                        model:models.User,
+                        attributes: ['id', 'username', "name"],
+                        as: 'tech'
+                    },
+                    {
+                        model:models.User,
+                        attributes: ['id', 'username', "name"],
+                        as: 'admin'
+                    }
+                    ,
+                    {
+                        model:models.User,
+                        attributes: ['id', 'username', "name"],
+                        as: 'client'
+                    }
+    
+                        
+                    ]
+                }
+
             ],
             limit: perPage,
             offset: (page - 1) * perPage,
         })
+
+        return allTickets
 
     }
     async getById(id) {
