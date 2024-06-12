@@ -27,28 +27,28 @@ class TicketService {
             order: [
                 [sortBy, sortDesc === 'true' ? 'DESC' : 'ASC']
             ],
-            include:[
+            include: [
                 {
-                    model:models.Assignment,
+                    model: models.Assignment,
                     as: 'assignment',
-                    include:[{
-                        model:models.User,
+                    include: [{
+                        model: models.User,
                         attributes: ['id', 'username', "name"],
                         as: 'tech'
                     },
                     {
-                        model:models.User,
+                        model: models.User,
                         attributes: ['id', 'username', "name"],
                         as: 'admin'
                     }
-                    ,
+                        ,
                     {
-                        model:models.User,
+                        model: models.User,
                         attributes: ['id', 'username', "name"],
                         as: 'client'
                     }
-    
-                        
+
+
                     ]
                 }
 
@@ -71,8 +71,13 @@ class TicketService {
                     model: models.User,
                     attributes: ['id', 'username', "name"], // Include the user attributes you need
                     as: 'user'
-                }]
+                }],
+
+            }, {
+                model: models.Assignment,
+                as: 'assignment'
             }]
+
         });
 
         if (!ticket) {
@@ -82,33 +87,44 @@ class TicketService {
         return ticket;
     }
     async add(data) {
-    try {
-        const [user, type] = await Promise.all([
-            models.User.findOne({
-                where: { id: data.ticket.user_id },
-                attributes: ['priority']
-            }),
-            models.Type.findOne({
-                where: { id: data.ticket.type_id },
-                attributes: ['priority']
-            })
-        ]);
+        try {
+            const [user, type] = await Promise.all([
+                models.User.findOne({
+                    where: { id: data.ticket.user_id },
+                    attributes: ['priority']
+                }),
+                models.Type.findOne({
+                    where: { id: data.ticket.type_id },
+                    attributes: ['priority']
+                })
+            ]);
 
-        if (!user || !type) {
-            throw new Error('User or Type not found');
+            if (!user || !type) {
+                throw new Error('User or Type not found');
+            }
+
+            data.ticket.priority = Math.min(user.priority, type.priority);
+
+            const createdTicket = await models.Ticket.create(data.ticket);
+            return await models.Ticket.findOne({
+                where: { id: createdTicket.id }
+            });
+        } catch (error) {
+            console.error('Error adding ticket:', error);
+            throw error;
+        }
+    }
+
+    async getCommentById(id) {
+        const comment = await models.Comment.findByPk(id);
+
+        if (!comment) {
+            throw new Error(`Delete Comment with id ${id} not found`);
         }
 
-        data.ticket.priority = Math.min(user.priority, type.priority);
+        return comment;
 
-        const createdTicket = await models.Ticket.create(data.ticket);
-        return await models.Ticket.findOne({
-            where: { id: createdTicket.id }
-        });
-    } catch (error) {
-        console.error('Error adding ticket:', error);
-        throw error;
     }
-}
 
 
     async update(id, data) {
@@ -123,6 +139,22 @@ class TicketService {
 
     async remove(id) {
         const dataTmp = await this.getById(id);
+        if (dataTmp.assignment.legnth != 0) {
+            
+            for (const assignmment of dataTmp.assignment) {
+
+                const assignmmentTmp = await this.getAssignmById(assignmment.id);
+                await assignmmentTmp.destroy();
+            }
+
+        }
+        if (dataTmp.comments.length != 0) {
+            for (const comment of dataTmp.comments) {
+                const commentTmp = await this.getCommentById(comment.id);
+                await commentTmp.destroy();
+            }
+
+        }
         return await dataTmp.destroy();
     }
     async getByUserId(id) {
@@ -139,28 +171,28 @@ class TicketService {
                     attributes: ['id', 'username', "name"],
                     as: 'user'
                 }
-            ]
+                ]
             }, {
-                model:models.Assignment,
+                model: models.Assignment,
                 as: 'assignment',
-                include:[{
-                    model:models.User,
+                include: [{
+                    model: models.User,
                     attributes: ['id', 'username', "name"],
                     as: 'tech'
                 },
                 {
-                    model:models.User,
+                    model: models.User,
                     attributes: ['id', 'username', "name"],
                     as: 'admin'
                 }
-                ,
+                    ,
                 {
-                    model:models.User,
+                    model: models.User,
                     attributes: ['id', 'username', "name"],
                     as: 'client'
                 }
 
-                    
+
                 ]
             }]
         });
@@ -171,6 +203,17 @@ class TicketService {
         return tickets;
 
     }
+    async getAssignmById(id) {
+        const assignment = await models.Assignment.findByPk(id);
+
+        if (!assignment) {
+            throw new Error(`assignment with id ${id} not found`);
+        }
+
+        return assignment;
+
+    }
+
 }
 
 module.exports = TicketService;
