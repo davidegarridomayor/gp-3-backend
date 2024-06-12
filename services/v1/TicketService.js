@@ -38,7 +38,7 @@ class TicketService {
             include: [{
                 model: models.Comment,
                 attributes: ['id', 'content', 'user_id'],
-                as: 'comment',
+                as: 'comments',
                 // You can include additional options here as needed
                 include: [{
                     model: models.User,
