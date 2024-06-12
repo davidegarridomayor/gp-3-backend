@@ -111,7 +111,30 @@ class TicketService {
                     model: models.User,
                     attributes: ['id', 'username', "name"],
                     as: 'user'
-                }]
+                }
+            ]
+            }, {
+                model:models.Assignment,
+                as: 'assignment',
+                include:[{
+                    model:models.User,
+                    attributes: ['id', 'username', "name"],
+                    as: 'tech'
+                },
+                {
+                    model:models.User,
+                    attributes: ['id', 'username', "name"],
+                    as: 'admin'
+                }
+                ,
+                {
+                    model:models.User,
+                    attributes: ['id', 'username', "name"],
+                    as: 'client'
+                }
+
+                    
+                ]
             }]
         });
         if (!tickets.length) {
