@@ -80,6 +80,30 @@ async add(data) {
         const dataTmp = await this.getById(id);
         return await dataTmp.destroy();
     }
+
+    async getByUserId(id) {
+        const tickets = await models.Assignment.findAll({
+            where: {
+                tech_id: id
+            },
+            include: [{
+                model: models.Ticket,
+                as: 'ticket',
+                include: [{
+                    model: models.User,
+                    attributes: ['id', 'username', "name"],
+                    as: 'user'
+                }
+                ]
+            }, ]
+        });
+        if (!tickets.length) {
+            return []
+        }
+
+        return tickets;
+
+    }
 }
 
 module.exports = AssignmentService;
